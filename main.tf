@@ -13,7 +13,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_cognito_user_pool" "tutorial" {
+resource "aws_cognito_user_pool" "Project6AppUserPool" {
   name = var.user_pool_name
 
   account_recovery_setting {
