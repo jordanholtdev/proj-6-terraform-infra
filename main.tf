@@ -36,3 +36,9 @@ resource "aws_cognito_user_pool" "tutorial" {
   }
 
 }
+
+resource "aws_cognito_user_pool_client" "webapp" {
+  name = "webapp"
+
+  user_pool_id = aws_cognito_user_pool.Project6AppUserPool.id
+}
