@@ -13,7 +13,7 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_cognito_user_pool" "tutorial" {
+resource "aws_cognito_user_pool" "Project6AppUserPool" {
   name = var.user_pool_name
 
   account_recovery_setting {
@@ -35,4 +35,10 @@ resource "aws_cognito_user_pool" "tutorial" {
     require_uppercase = true
   }
 
+}
+
+resource "aws_cognito_user_pool_client" "webapp" {
+  name = "webapp"
+
+  user_pool_id = aws_cognito_user_pool.Project6AppUserPool.id
 }
