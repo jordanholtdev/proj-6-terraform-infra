@@ -96,26 +96,54 @@ resource "aws_s3_bucket_acl" "images_bucket_acl" {
   acl    = "private"
 }
 
-resource "aws_s3_bucket_policy" "images_allow_access_from_another_account" {
-  bucket = aws_s3_bucket.images.id
-  policy = data.aws_iam_policy_document.allow_access_from_another_account.json
+resource "aws_iam_role" "Project6AppRole" {
+  name = "Project6AppRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name        = "Project 6 App Role"
+    Environment = "Dev"
+  }
 }
 
-data "aws_iam_policy_document" "allow_access_from_another_account" {
-  statement {
-    actions = [
-      "s3:GetObject",
-      "s3:PutObject",
-      "s3:DeleteObject"
-    ]
+resource "aws_iam_role_policy_attachment" "Project6AppRoleAttachment" {
+  role       = aws_iam_role.Project6AppRole.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
 
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::123456789012:root"]
+resource "aws_iam_policy" "project6_app_policy" {
+  name        = "Project6AppPolicy"
+  description = "Custom IAM policy for S3 bucket access"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+       "arn:aws:s3:::${aws_s3_bucket.images.id}/*"
+      ]
     }
-
-    resources = [
-      "${aws_s3_bucket.images.arn}/*"
-    ]
-  }
+  ]
+}
+EOF
 }
