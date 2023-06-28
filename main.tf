@@ -77,32 +77,45 @@ resource "aws_s3_bucket_ownership_controls" "images_bucket_ownership_controls" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "images_bucket_public_access_block" {
+  bucket = aws_s3_bucket.images.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
 resource "aws_s3_bucket_acl" "images_bucket_acl" {
-  depends_on = [aws_s3_bucket_ownership_controls.images_bucket_ownership_controls]
+  depends_on = [
+    aws_s3_bucket_ownership_controls.images_bucket_ownership_controls,
+    aws_s3_bucket_public_access_block.images_bucket_public_access_block
+  ]
 
   bucket = aws_s3_bucket.images.id
   acl    = "private"
 }
 
-resource "aws_s3_bucket_policy" "image_bucket_policy" {
+resource "aws_s3_bucket_policy" "images_allow_access_from_another_account" {
   bucket = aws_s3_bucket.images.id
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "AllowPublicRead",
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": [
-        "s3:GetObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::${aws_s3_bucket.images.id}/*"
-      ]
-    }
-  ]
+  policy = data.aws_iam_policy_document.allow_access_from_another_account.json
 }
-EOF
+
+data "aws_iam_policy_document" "allow_access_from_another_account" {
+  statement {
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject"
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::123456789012:root"]
+    }
+
+    resources = [
+      "${aws_s3_bucket.images.arn}/*"
+    ]
+  }
 }
