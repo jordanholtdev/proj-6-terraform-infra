@@ -59,7 +59,7 @@ resource "aws_s3_bucket_cors_configuration" "images_bucket_cors_conf" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["PUT", "POST"]
-    allowed_origins = ["https://s3-website-test.hashicorp.com"]
+    allowed_origins = ["https://s3-website-test.hashicorp.com", "http://localhost:5173"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
