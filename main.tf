@@ -96,11 +96,6 @@ resource "aws_s3_bucket_acl" "images_bucket_acl" {
   acl    = "private"
 }
 
-resource "aws_s3_bucket_policy" "images_allow_access_from_another_account" {
-  bucket = aws_s3_bucket.images.id
-  policy = data.aws_iam_policy_document.allow_access_from_another_account.json
-}
-
 resource "aws_iam_role" "Project6AppRole" {
   name = "Project6AppRole"
 
