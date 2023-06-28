@@ -70,6 +70,19 @@ resource "aws_s3_bucket_cors_configuration" "images_bucket_cors_conf" {
   }
 }
 
+resource "aws_s3_bucket_ownership_controls" "images_bucket_ownership_controls" {
+  bucket = aws_s3_bucket.images.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "images_bucket_acl" {
+  depends_on = [aws_s3_bucket_ownership_controls.images_bucket_ownership_controls]
+
+  bucket = aws_s3_bucket.images.id
+  acl    = "private"
+}
 
 resource "aws_s3_bucket_policy" "image_bucket_policy" {
   bucket = aws_s3_bucket.images.id
