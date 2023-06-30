@@ -147,3 +147,32 @@ resource "aws_iam_policy" "project6_app_policy" {
 }
 EOF
 }
+
+resource "aws_sqs_queue" "image_processing_queue" {
+  name = "image-processing-queue"
+
+  tags = {
+    Name        = "Project 6 Image Processing Queue"
+    Environment = "Dev"
+  }
+}
+
+resource "aws_sqs_queue_policy" "image_processing_queue_policy" {
+  queue_url = aws_sqs_queue.image_processing_queue.id
+
+  policy = <<EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "AWS": "*"
+        },
+        "Action": "sqs:SendMessage",
+        "Resource": "${aws_sqs_queue.image_processing_queue.arn}"
+      }
+    ]
+  }
+  EOF
+}
