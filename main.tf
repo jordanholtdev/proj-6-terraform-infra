@@ -261,10 +261,26 @@ resource "aws_iam_role" "project6_lambda_role" {
   }
 }
 
-# Lambda role policy
+resource "aws_iam_policy" "project6_lambda_policy" {
+  name        = "project6_lambda_policy"
+  description = "Policy for Lambda function to access SQS queue"
+
+  policy = jsonencode({
+    Version   = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "sqs:ReceiveMessage",
+        Resource = aws_sqs_queue.image_processing_queue.arn
+      }
+    ]
+  })
+}
+
+# Lambda role policy attachment
 resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
   role       = aws_iam_role.project6_lambda_role.name
-  policy_arn = aws_iam_policy.project6_app_policy.arn
+  policy_arn = aws_iam_policy.project6_lambda_policy.arn
 }
 
 # SQS source event mapping

@@ -32,3 +32,8 @@ output "project6_lambda_role_name" {
   description = "The name of the IAM Role for the Lambda function"
   value = aws_iam_role.project6_lambda_role.name
 }
+
+output "project6_lambda_policy_arn" {
+  description = "The ARN of the IAM Policy for the Lambda function"
+  value = aws_iam_policy.project6_lambda_policy.arn
+}
