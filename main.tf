@@ -270,7 +270,13 @@ resource "aws_iam_policy" "project6_lambda_policy" {
     Statement = [
       {
         Effect   = "Allow",
-        Action   = "sqs:ReceiveMessage",
+        Action   = [
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes",
+          "sqs:GetQueueUrl",
+          "sqs:ChangeMessageVisibility"
+        ],
         Resource = aws_sqs_queue.image_processing_queue.arn
       }
     ]
