@@ -180,8 +180,8 @@ resource "aws_sqs_queue_policy" "image_processing_queue_policy" {
 }
 
 # S3 bucket containing Lambda function to process images
-resource "aws_s3_bucket" "project6_lambda_functions" {
-  bucket = "project6_lambda_functions"  # Replace with your desired bucket name
+resource "aws_s3_bucket" "project6-lambda-functions" {
+  bucket = "project6-lambda-functions"  # Replace with your desired bucket name
 
   lifecycle {
     prevent_destroy = true  # Optional: Prevent accidental deletion
@@ -193,14 +193,14 @@ resource "aws_s3_bucket" "project6_lambda_functions" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "lambda_bucket_ownership_controls" {
-  bucket = aws_s3_bucket.project6_lambda_functions.id
+  bucket = aws_s3_bucket.project6-lambda-functions.id
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
 }
 
 resource "aws_s3_bucket_public_access_block" "lambda_bucket_public_access_block" {
-  bucket = aws_s3_bucket.project6_lambda_functions.id
+  bucket = aws_s3_bucket.project6-lambda-functions.id
 
   block_public_acls       = false
   block_public_policy     = false
@@ -214,7 +214,7 @@ resource "aws_s3_bucket_acl" "lambda_bucket_acl" {
     aws_s3_bucket_public_access_block.lambda_bucket_public_access_block
   ]
 
-  bucket = aws_s3_bucket.project6_lambda_functions.id
+  bucket = aws_s3_bucket.project6-lambda-functions.id
   acl    = "private"
 }
 
@@ -229,16 +229,9 @@ resource "aws_lambda_function" "image_processing_lambda" {
   memory_size      = 256
 
   # Replace with the S3 bucket containing your Lambda function code
-  s3_bucket        = "project6_lambda_functions"
+  s3_bucket        = "project6-lambda-functions"
   s3_key           = "image-processing-lambda.zip"
 
-  environment {
-    variables = {
-      AWS_REGION   = "us-east-1"
-      S3_BUCKET    = "images-bucket-project6"
-      SQS_QUEUE    = "image-processing-queue"
-    }
-  }
   tags = {
     Name        = "Project 6 Image Processing Lambda"
     Environment = "Dev"
