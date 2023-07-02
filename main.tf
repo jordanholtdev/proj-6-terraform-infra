@@ -218,6 +218,17 @@ resource "aws_s3_bucket_acl" "lambda_bucket_acl" {
   acl    = "private"
 }
 
+# CloudWatch log group for Lambda function
+resource "aws_cloudwatch_log_group" "image_processing_log_group" {
+  name              = "/aws/lambda/image-processing-lambda"
+  retention_in_days = 30
+
+  tags = {
+    Name        = "Project 6 Image Processing Log Group"
+    Environment = "Dev"
+  }
+}
+
 
 # Lambda function to process images
 resource "aws_lambda_function" "image_processing_lambda" {
