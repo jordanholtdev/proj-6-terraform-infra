@@ -275,7 +275,11 @@ resource "aws_iam_policy" "project6_lambda_policy" {
           "sqs:DeleteMessage",
           "sqs:GetQueueAttributes",
           "sqs:GetQueueUrl",
-          "sqs:ChangeMessageVisibility"
+          "sqs:ChangeMessageVisibility",
+          "rekognition:DetectLabels",
+          "rekognition:DetectModerationLabels",
+          "rekognition:DetectText",
+          "rekognition:DetectFaces",
         ],
         Resource = aws_sqs_queue.image_processing_queue.arn
       }
@@ -294,4 +298,13 @@ resource "aws_lambda_event_source_mapping" "sqs_mapping" {
   event_source_arn = aws_sqs_queue.image_processing_queue.arn
   function_name    = aws_lambda_function.image_processing_lambda.function_name
   batch_size       = 10
+}
+
+# Allow cloudwatch logs to be created
+resource "aws_lambda_permission" "allow_cloudwatch_logs" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.image_processing_lambda.function_name
+  principal     = "logs.amazonaws.com"
+  source_arn    = aws_lambda_function.image_processing_lambda.arn
 }
