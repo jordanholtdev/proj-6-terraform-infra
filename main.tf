@@ -224,6 +224,7 @@ resource "aws_lambda_function" "image_processing_lambda" {
   function_name    = "image-processing-lambda"
   runtime          = "nodejs16.x"
   handler          = "index.handler"
+  role             = aws_iam_role.project6_lambda_role.arn
   timeout          = 30
   memory_size      = 256
 
