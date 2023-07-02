@@ -253,7 +253,7 @@ resource "aws_iam_role" "project6_lambda_role" {
       },
       "Action": [
         "sts:AssumeRole",
-        "sqs:ReceiveMessage",
+        "sqs:ReceiveMessage"
       ],
       "Resource": "${aws_sqs_queue.image_processing_queue.arn}"
     }
