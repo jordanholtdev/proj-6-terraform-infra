@@ -242,24 +242,19 @@ resource "aws_lambda_function" "image_processing_lambda" {
 resource "aws_iam_role" "project6_lambda_role" {
   name = "project6_lambda_role"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Action": [
-        "sts:AssumeRole",
-        "sqs:ReceiveMessage"
-      ],
-      "Resource": "${aws_sqs_queue.image_processing_queue.arn}"
-    }
-  ]
-}
-EOF
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+
   tags = {
     Name        = "Project 6 Lambda Role"
     Environment = "Dev"
@@ -269,7 +264,7 @@ EOF
 # Lambda role policy
 resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
   role       = aws_iam_role.project6_lambda_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  policy_arn = aws_iam_policy.project6_app_policy.arn
 }
 
 # SQS source event mapping
