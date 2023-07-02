@@ -25,7 +25,7 @@ output "project6_lambda_role" {
 
 output "aws_s3_bucket_lambda_functions_id" {
   description = "The ID of the lambda function S3 bucket"
-  value = aws_s3_bucket.project6_lambda_functions.id
+  value = aws_s3_bucket.project6-lambda-functions.id
 }
 
 output "project6_lambda_role_name" {
