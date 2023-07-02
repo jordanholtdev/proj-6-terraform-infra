@@ -182,7 +182,6 @@ resource "aws_sqs_queue_policy" "image_processing_queue_policy" {
 # S3 bucket containing Lambda function to process images
 resource "aws_s3_bucket" "project6_lambda_functions" {
   bucket = "project6_lambda_functions"  # Replace with your desired bucket name
-  acl    = "private"
 
   lifecycle {
     prevent_destroy = true  # Optional: Prevent accidental deletion
@@ -191,6 +190,32 @@ resource "aws_s3_bucket" "project6_lambda_functions" {
     Name        = "Project 6 Lambda Bucket"
     Environment = "Dev"
   }
+}
+
+resource "aws_s3_bucket_ownership_controls" "lambda_bucket_ownership_controls" {
+  bucket = aws_s3_bucket.project6_lambda_functions.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "lambda_bucket_public_access_block" {
+  bucket = aws_s3_bucket.project6_lambda_functions.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_acl" "lambda_bucket_acl" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.lambda_bucket_ownership_controls,
+    aws_s3_bucket_public_access_block.lambda_bucket_public_access_block
+  ]
+
+  bucket = aws_s3_bucket.project6_lambda_functions.id
+  acl    = "private"
 }
 
 
@@ -220,8 +245,8 @@ resource "aws_lambda_function" "image_processing_lambda" {
 }
 
 # Lambda role
-resource "aws_iam_role" "lambda_role" {
-  name = "image-processing-lambda-role"
+resource "aws_iam_role" "project6_lambda_role" {
+  name = "project6_lambda_role"
 
   assume_role_policy = <<EOF
 {
@@ -247,16 +272,11 @@ EOF
 resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-
-  tags = {
-    Name        = "Project 6 Lambda Role Policy"
-    Environment = "Dev"
-  }
 }
 
 # SQS source event mapping
 resource "aws_lambda_event_source_mapping" "sqs_mapping" {
-  event_source_arn = aws_sqs_queue.my_queue.arn
+  event_source_arn = aws_sqs_queue.image_processing_queue.arn
   function_name    = aws_lambda_function.image_processing_lambda.function_name
   batch_size       = 10
 }

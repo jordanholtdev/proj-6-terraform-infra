@@ -22,3 +22,8 @@ output "project6_lambda_role" {
   description = "The ARN of the IAM Role for the Lambda function"
   value = aws_iam_role.project6_lambda_role.arn
 }
+
+output "aws_s3_bucket_id" {
+  description = "The ID of the lambda function S3 bucket"
+  value = aws_s3_bucket.project6_lambda_functions.id
+}
