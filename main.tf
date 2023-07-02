@@ -280,6 +280,9 @@ resource "aws_iam_policy" "project6_lambda_policy" {
           "rekognition:DetectModerationLabels",
           "rekognition:DetectText",
           "rekognition:DetectFaces",
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
         ],
         Resource = aws_sqs_queue.image_processing_queue.arn
       }
