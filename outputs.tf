@@ -17,3 +17,8 @@ output "image_processing_queue_arn" {
   description = "The ARN of the SQS Queue"
   value = aws_sqs_queue.image_processing_queue.arn
 }
+
+output "project6_lambda_role" {
+  description = "The ARN of the IAM Role for the Lambda function"
+  value = aws_iam_role.project6_lambda_role.arn
+}
