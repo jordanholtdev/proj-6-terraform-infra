@@ -251,7 +251,10 @@ resource "aws_iam_role" "project6_lambda_role" {
       "Principal": {
         "Service": "lambda.amazonaws.com"
       },
-      "Action": "sts:AssumeRole"
+      "Action": [
+        "sts:AssumeRole",
+        "sqs:ReceiveMessage",
+      ]
     }
   ]
 }
