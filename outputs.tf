@@ -37,3 +37,13 @@ output "project6_lambda_policy_arn" {
   description = "The ARN of the IAM Policy for the Lambda function"
   value = aws_iam_policy.project6_lambda_policy.arn
 }
+
+output "lambda_function_name" {
+  description = "The name of the Lambda function"
+  value = aws_lambda_function.project6_lambda_function.function_name
+}
+
+output "lambda_function_arn" {
+  description = "The ARN of the Lambda function"
+  value = aws_lambda_function.project6_lambda_function.arn
+}
