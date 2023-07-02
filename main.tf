@@ -43,7 +43,7 @@ resource "aws_cognito_user_pool_client" "webapp" {
   user_pool_id = aws_cognito_user_pool.Project6AppUserPool.id
 }
 
-
+# S3 Bucket for images and CORS configuration
 resource "aws_s3_bucket" "images" {
   bucket = "images-bucket-project6"
 
@@ -96,6 +96,7 @@ resource "aws_s3_bucket_acl" "images_bucket_acl" {
   acl    = "private"
 }
 
+# IAM Role for the application
 resource "aws_iam_role" "Project6AppRole" {
   name = "Project6AppRole"
 
@@ -148,6 +149,7 @@ resource "aws_iam_policy" "project6_app_policy" {
 EOF
 }
 
+# AWS SQS Queue for image processing messages and policy
 resource "aws_sqs_queue" "image_processing_queue" {
   name = "image-processing-queue"
 
@@ -175,4 +177,107 @@ resource "aws_sqs_queue_policy" "image_processing_queue_policy" {
     ]
   }
   EOF
+}
+
+# S3 bucket containing Lambda function to process images
+resource "aws_s3_bucket" "project6_lambda_functions" {
+  bucket = "project6_lambda_functions"  # Replace with your desired bucket name
+
+  lifecycle {
+    prevent_destroy = true  # Optional: Prevent accidental deletion
+  }
+  tags = {
+    Name        = "Project 6 Lambda Bucket"
+    Environment = "Dev"
+  }
+}
+
+resource "aws_s3_bucket_ownership_controls" "lambda_bucket_ownership_controls" {
+  bucket = aws_s3_bucket.project6_lambda_functions.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "lambda_bucket_public_access_block" {
+  bucket = aws_s3_bucket.project6_lambda_functions.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_acl" "lambda_bucket_acl" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.lambda_bucket_ownership_controls,
+    aws_s3_bucket_public_access_block.lambda_bucket_public_access_block
+  ]
+
+  bucket = aws_s3_bucket.project6_lambda_functions.id
+  acl    = "private"
+}
+
+
+# Lambda function to process images
+resource "aws_lambda_function" "image_processing_lambda" {
+  function_name    = "image-processing-lambda"
+  runtime          = "nodejs16.x"
+  handler          = "index.handler"
+  role             = aws_iam_role.project6_lambda_role.arn
+  timeout          = 30
+  memory_size      = 256
+
+  # Replace with the S3 bucket containing your Lambda function code
+  s3_bucket        = "project6_lambda_functions"
+  s3_key           = "image-processing-lambda.zip"
+
+  environment {
+    variables = {
+      AWS_REGION   = "us-east-1"
+      S3_BUCKET    = "images-bucket-project6"
+      SQS_QUEUE    = "image-processing-queue"
+    }
+  }
+  tags = {
+    Name        = "Project 6 Image Processing Lambda"
+    Environment = "Dev"
+  }
+}
+
+# Lambda role
+resource "aws_iam_role" "project6_lambda_role" {
+  name = "project6_lambda_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+  tags = {
+    Name        = "Project 6 Lambda Role"
+    Environment = "Dev"
+  }
+}
+
+# Lambda role policy
+resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
+  role       = aws_iam_role.project6_lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+# SQS source event mapping
+resource "aws_lambda_event_source_mapping" "sqs_mapping" {
+  event_source_arn = aws_sqs_queue.image_processing_queue.arn
+  function_name    = aws_lambda_function.image_processing_lambda.function_name
+  batch_size       = 10
 }
