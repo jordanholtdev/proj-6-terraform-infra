@@ -307,8 +307,8 @@ resource "aws_iam_policy" "project6_lambda_policy" {
         Resource = [
           "${aws_sqs_queue.image_processing_queue.arn}",
           "${aws_sqs_queue.image_processing_queue.arn}/*",
-          "${aws_s3_bucket.aws_s3_bucket.images.arn}",
-          "${aws_s3_bucket.aws_s3_bucket.images.arn}/*",
+          "${aws_s3_bucket.images.arn}",
+          "${aws_s3_bucket.images.arn}/*",
           "${aws_lambda_function.image_processing_lambda.arn}",
           "${aws_lambda_function.image_processing_lambda.arn}:$LATEST",
           "arn:aws:logs:*:*:*",
