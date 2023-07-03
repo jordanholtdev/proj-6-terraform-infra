@@ -47,3 +47,13 @@ output "lambda_function_arn" {
   description = "The ARN of the Lambda function"
   value = aws_lambda_function.image_processing_lambda.arn
 }
+
+output "image_processing_results_queue_id" {
+  description = "The URL of the SQS Queue"
+  value = aws_sqs_queue.image_processing_results_queue.id
+}
+
+output "image_processing_results_queue_arn" {
+  description = "The ARN of the SQS Queue"
+  value = aws_sqs_queue.image_processing_results_queue.arn
+}

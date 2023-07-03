@@ -322,3 +322,33 @@ resource "aws_lambda_permission" "allow_cloudwatch_logs" {
   principal     = "logs.amazonaws.com"
   source_arn    = aws_lambda_function.image_processing_lambda.arn
 }
+
+# SQS queue for the image processing results
+resource "aws_sqs_queue" "image_processing_results_queue" {
+  name = "image-processing-results-queue"
+
+  tags = {
+    Name        = "Project 6 Image Processing Results Queue"
+    Environment = "Dev"
+  }
+}
+
+resource "aws_sqs_queue_policy" "image_processing_results_queue_policy" {
+  queue_url = aws_sqs_queue.image_processing_results_queue.id
+
+  policy = <<EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {
+          "AWS": "*"
+        },
+        "Action": "sqs:SendMessage",
+        "Resource": "${aws_sqs_queue.image_processing_results_queue.arn}"
+      }
+    ]
+  }
+  EOF
+}
