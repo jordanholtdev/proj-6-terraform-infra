@@ -295,6 +295,7 @@ resource "aws_iam_policy" "project6_lambda_policy" {
           "sqs:ChangeMessageVisibility",
           "sqs:SendMessage",
           "sqs:SendMessageBatch",
+          "s3:GetObject",
           "rekognition:DetectLabels",
           "rekognition:DetectModerationLabels",
           "rekognition:DetectText",
