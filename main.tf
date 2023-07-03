@@ -293,6 +293,8 @@ resource "aws_iam_policy" "project6_lambda_policy" {
           "sqs:GetQueueAttributes",
           "sqs:GetQueueUrl",
           "sqs:ChangeMessageVisibility",
+          "sqs:SendMessage",
+          "sqs:SendMessageBatch",
           "rekognition:DetectLabels",
           "rekognition:DetectModerationLabels",
           "rekognition:DetectText",
