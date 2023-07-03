@@ -51,6 +51,27 @@ resource "aws_s3_bucket" "images" {
     Name        = "Project 6 Images Bucket"
     Environment = "Dev"
   }
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket"
+        ]
+        Effect   = "Allow"
+        Resource = [
+          "${aws_lambda_function.image_processing_lambda.arn}",
+          "${aws_lambda_function.image_processing_lambda.arn}/*"
+        ]
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      }
+    ]
+  })
+
 }
 
 resource "aws_s3_bucket_cors_configuration" "images_bucket_cors_conf" {

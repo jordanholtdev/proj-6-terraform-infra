@@ -8,6 +8,11 @@ output "aws_s3_bucket_id" {
   value = aws_s3_bucket.images.id
 }
 
+output "aws_s3_bucket_arn" {
+  description = "The ARN of the S3 Bucket"
+  value = aws_s3_bucket.images.arn
+}
+
 output "image_processing_queue_id" {
   description = "The URL of the SQS Queue"
   value = aws_sqs_queue.image_processing_queue.id
