@@ -62,7 +62,8 @@ resource "aws_s3_bucket" "images" {
         ]
         Effect   = "Allow"
         Resource = [
-          "${aws_s3_bucket.images.arn}/*"
+          "${aws_lambda_function.image_processing_lambda.arn}",
+          "${aws_lambda_function.image_processing_lambda.arn}/*"
         ]
         Principal = {
           Service = "lambda.amazonaws.com"
