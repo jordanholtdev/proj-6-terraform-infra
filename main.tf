@@ -51,27 +51,6 @@ resource "aws_s3_bucket" "images" {
     Name        = "Project 6 Images Bucket"
     Environment = "Dev"
   }
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "s3:GetObject",
-          "s3:ListBucket"
-        ]
-        Effect   = "Allow"
-        Resource = [
-          "${aws_lambda_function.image_processing_lambda.arn}",
-          "${aws_lambda_function.image_processing_lambda.arn}/*"
-        ]
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-      }
-    ]
-  })
-
 }
 
 resource "aws_s3_bucket_cors_configuration" "images_bucket_cors_conf" {
@@ -325,7 +304,17 @@ resource "aws_iam_policy" "project6_lambda_policy" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ],
-        Resource = aws_sqs_queue.image_processing_queue.arn
+        Resource = [
+          "${aws_sqs_queue.image_processing_queue.arn}",
+          "${aws_sqs_queue.image_processing_queue.arn}/*",
+          "${aws_s3_bucket.images.arn}",
+          "${aws_s3_bucket.images.arn}/*",
+          "${aws_lambda_function.image_processing_lambda.arn}",
+          "${aws_lambda_function.image_processing_lambda.arn}:$LATEST",
+          "arn:aws:logs:*:*:*",
+          "arn:aws:rekognition:*:*:*",
+          "${aws_cloudwatch_log_group.image_processing_log_group.arn}"
+        ]
       }
     ]
   })
