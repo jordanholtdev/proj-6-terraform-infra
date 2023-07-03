@@ -65,7 +65,7 @@ resource "aws_s3_bucket" "images" {
           "${aws_s3_bucket.images.arn}/*"
         ]
         Principal = {
-          Service = lambda.amazonaws.com
+          Service = "lambda.amazonaws.com"
         }
       }
     ]
