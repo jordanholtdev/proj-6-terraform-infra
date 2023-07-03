@@ -297,9 +297,6 @@ resource "aws_iam_policy" "project6_lambda_policy" {
           "sqs:SendMessageBatch",
           "s3:GetObject",
           "rekognition:DetectLabels",
-          "rekognition:DetectModerationLabels",
-          "rekognition:DetectText",
-          "rekognition:DetectFaces",
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutLogEvents"
@@ -313,7 +310,8 @@ resource "aws_iam_policy" "project6_lambda_policy" {
           "${aws_lambda_function.image_processing_lambda.arn}:$LATEST",
           "arn:aws:logs:*:*:*",
           "arn:aws:rekognition:*:*:*",
-          "${aws_cloudwatch_log_group.image_processing_log_group.arn}"
+          "${aws_cloudwatch_log_group.image_processing_log_group.arn}",
+          "*"
         ]
       }
     ]
