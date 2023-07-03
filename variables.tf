@@ -4,3 +4,8 @@ variable "user_pool_name" {
   default     = "Project6AppUserPool"
 }
 
+variable "IMAGE_RESULTS_SQS_QUEUE_URL" {
+  description = "URL of the SQS queue"
+  type        = string
+  default     = ""
+}

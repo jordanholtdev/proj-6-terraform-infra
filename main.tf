@@ -243,6 +243,12 @@ resource "aws_lambda_function" "image_processing_lambda" {
   s3_bucket        = "project6-lambda-functions"
   s3_key           = "image-processing-lambda.zip"
 
+  environment {
+    variables = {
+      IMAGE_RESULTS_SQS_QUEUE_URL = var.IMAGE_RESULTS_SQS_QUEUE_URL
+    }
+  }
+
   tags = {
     Name        = "Project 6 Image Processing Lambda"
     Environment = "Dev"
