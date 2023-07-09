@@ -45,6 +45,11 @@ resource "aws_cognito_user_pool" "Project6AppUserPool" {
 
 }
 
+resource "aws_cognito_user_pool_domain" "Project6AppUserPoolDomain" {
+  domain = var.user_pool_domain
+  user_pool_id = aws_cognito_user_pool.Project6AppUserPool.id
+}
+
 resource "aws_cognito_user_pool_client" "webapp" {
   name = "webapp"
 
