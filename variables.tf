@@ -1,7 +1,7 @@
 variable "user_pool_name" {
   description = "Value of the Name for the Cognito User Pool"
   type        = string
-  default     = "Project6AppUserPool3"
+  default     = "Project6AppUserPool4"
 }
 
 variable "user_pool_domain" {
