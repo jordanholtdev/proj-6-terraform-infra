@@ -16,20 +16,13 @@ provider "aws" {
 resource "aws_cognito_user_pool" "Project6AppUserPool" {
   name = var.user_pool_name
 
+  mfa_configuration = "OFF"
+
   account_recovery_setting {
     recovery_mechanism {
       name     = "verified_email"
       priority = 1
     }
-  }
-
-  verification_message_template {
-    default_email_option = "CONFIRM_WITH_LINK"
-    email_message_by_link = jsonencode({
-      subject = "Distributed Image Processing - Account verification link"
-      html_body = "Hello {username}, Please click the link below to verify your email address. {##Click Here##}"
-      email_message = "Hello {username}, Please click the link below to verify your email address. {##Click Here##}"
-    })
   }
 
   email_configuration {
