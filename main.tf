@@ -16,8 +16,7 @@ provider "aws" {
 resource "aws_cognito_user_pool" "Project6AppUserPool" {
   name = var.user_pool_name
 
-  alias_attributes = "email"
-  username_attributes = "email"
+  username_attributes = ["email"]
 
   mfa_configuration = "OFF"
 
