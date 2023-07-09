@@ -18,6 +18,12 @@ resource "aws_cognito_user_pool" "Project6AppUserPool" {
 
   mfa_configuration = "OFF"
 
+  schema {
+    attribute_data_type = "String"
+    name                = "email"
+    required            = true
+  }
+
   account_recovery_setting {
     recovery_mechanism {
       name     = "verified_email"
@@ -43,6 +49,7 @@ resource "aws_cognito_user_pool_client" "webapp" {
   name = "webapp"
 
   user_pool_id = aws_cognito_user_pool.Project6AppUserPool.id
+
 }
 
 # S3 Bucket for images and CORS configuration
