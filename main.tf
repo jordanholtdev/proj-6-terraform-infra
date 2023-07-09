@@ -20,12 +20,6 @@ resource "aws_cognito_user_pool" "Project6AppUserPool" {
 
   mfa_configuration = "OFF"
 
-  schema {
-    attribute_data_type = "String"
-    name                = "email"
-    required            = true
-  }
-
   account_recovery_setting {
     recovery_mechanism {
       name     = "verified_email"
