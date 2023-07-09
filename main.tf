@@ -37,12 +37,6 @@ resource "aws_cognito_user_pool" "Project6AppUserPool" {
     email_sending_account = "COGNITO_DEFAULT"
   }
 
-  verification_message_template {
-    default_email_option = "CONFIRM_WITH_LINK"
-    email_message_by_link = "Please click the link below to verify your email address. {##Click Here##}"
-    email_subject_by_link = "Your verification link"
-  }
-
   password_policy {
     minimum_length = 8
     require_lowercase = true
