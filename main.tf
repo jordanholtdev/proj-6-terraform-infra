@@ -440,6 +440,12 @@ resource "aws_lb_listener_rule" "project6_listener_rule" {
     target_group_arn = aws_lb_target_group.project6_target_group.arn
   }
 
+  condition {
+    path_pattern {
+      values = ["/"]
+    }
+  }
+
 }
 
 # Execution role for the ECS task
