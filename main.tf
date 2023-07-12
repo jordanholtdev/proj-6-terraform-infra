@@ -418,15 +418,6 @@ resource "aws_lb_target_group" "project6_target_group" {
   }
 }
 
-# target group
-resource "aws_lb_target_group" "project6_target_group" {
-  name        = "project6-target-group"
-  port        = 80
-  protocol    = "HTTP"
-  vpc_id      = var.project6_vpc
-  target_type = "ip"
-}
-
 # load balancer listener
 resource "aws_lb_listener" "project6_listener" {
   load_balancer_arn = aws_lb.project6_lb.arn
