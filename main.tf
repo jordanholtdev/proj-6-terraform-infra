@@ -10,7 +10,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
 resource "aws_cognito_user_pool" "Project6AppUserPool" {
@@ -384,4 +384,196 @@ resource "aws_sqs_queue_policy" "image_processing_results_queue_policy" {
     ]
   }
   EOF
+}
+
+
+# load balancer
+resource "aws_lb" "project6_lb" {
+  name               = "project6-lb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.lb_sg.id]
+  subnets            = [aws_subnet.project6_subnet_1.id, aws_subnet.project6_subnet_2.id]
+
+  // add other required properties
+
+  tags = {
+    Name = "project6-lb"
+    Project = "project6"
+  }
+}
+
+# load balancer target group
+resource "aws_lb_target_group" "project6_target_group" {
+  name     = "project6-target-group"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = var.project6_vpc
+
+  // add other required properties
+
+  tags = {
+    Name = "project6-target-group"
+    Project = "project6"
+  }
+}
+
+# Execution role for the ECS task
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name = "ecs-task-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name        = "ECS Task Execution Role"
+    Environment = "Dev"
+  }
+}
+
+# Execution role policy for the ECS task
+resource "aws_iam_policy" "ecs_task_execution_policy" {
+  name        = "ecs-task-execution-policy"
+  description = "Policy for the ECS task execution role"
+  policy      = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "ecr:GetAuthorizationToken",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+
+  tags = {
+    Name        = "ECS Task Execution Policy"
+    Environment = "Dev"
+    Project     = "Project 6"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_attachment" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.ecs_task_execution_policy.arn
+}
+
+
+
+# ESC cluster
+resource "aws_ecs_cluster" "project6_ecs_cluster" {
+  name = "project6-ecs-cluster"
+
+  tags = {
+    Name        = "Project 6 ECS Cluster"
+    Environment = "Dev"
+  }
+}
+
+# Security group for the ECS cluster
+resource "aws_security_group" "ecs_cluster_security_group" {
+  name        = "ecs-cluster-security-group"
+  description = "Security group for the ECS cluster"
+
+  vpc_id = aws_vpc.project6_vpc.id
+
+  ingress {
+    description = "Allow inbound traffic from the load balancer"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "Allow outbound traffic to the internet"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# ECS task definition
+resource "aws_ecs_task_definition" "project6_task_definition" {
+  family                   = "project6-task-definition"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 256
+  memory                   = 512
+  network_mode             = "awsvpc"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.Project6AppRole.arn
+
+  container_definitions = jsondecode([
+      {
+        "name": "project6",
+        "image": "${var.ECR_REPOSITORY_URL}:${var.image_tag}",
+        "portMappings": [
+          {
+            "containerPort": 80,
+            "hostPort": 80,
+            "protocol": "tcp"
+          }
+        ],
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "${aws_cloudwatch_log_group.project6_log_group.name}",
+            "awslogs-region": "${var.aws_region}}",
+            "awslogs-stream-prefix": "ecs"
+          }
+        }
+      }
+  ])
+
+
+  tags = {
+    Name        = "Project 6 Task Definition"
+    Environment = "Dev"
+  }
+}
+
+# ECS Service
+resource "aws_ecs_service" "project6_ecs_service" {
+  name            = "project6-ecs-service"
+  cluster         = aws_ecs_cluster.project6_ecs_cluster.id
+  task_definition = aws_ecs_task_definition.project6_task_definition.arn
+  desired_count   = 1
+  launch_type     = "EC2"
+
+  network_configuration {
+    subnets         = [var.project6_subnet_1]
+    security_groups = [aws_security_group.ecs_cluster_security_group.id]
+    assign_public_ip = false
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.project6_target_group.arn
+    container_name   = "project6"
+    container_port   = 80
+  }
+
+  tags = {
+    Name        = "Project 6 ECS Service"
+    Environment = "Dev"
+  }
 }

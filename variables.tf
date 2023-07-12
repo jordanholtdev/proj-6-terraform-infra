@@ -16,3 +16,31 @@ variable "IMAGE_RESULTS_SQS_QUEUE_URL" {
   default     = ""
 }
 
+variable "ECR_REPOSITORY_URL" {
+  description = "URL of the ECR repository"
+  type        = string
+  default     = ""
+}
+
+variable "image_tag" {
+  description = "The tag of the Docker image to deploy"
+  type        = string
+}
+
+variable "aws_region" {
+  description = "The AWS region to deploy to"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "project6_subnet_1" {
+  description = "The ID of the first subnet"
+  type        = string
+  default     = ""
+}
+
+variable "project6_vpc" {
+  description = "The ID of the VPC"
+  type        = string
+  default     = ""
+}
