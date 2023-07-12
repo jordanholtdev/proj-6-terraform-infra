@@ -392,7 +392,7 @@ resource "aws_lb" "project6_lb" {
   name               = "project6-lb"
   internal           = false
   load_balancer_type = "application"
-  subnets            = [var.project6_subnet_1]
+  subnets            = [var.project6_subnet_1, var.project6_subnet_2]
 
   // add other required properties
 
@@ -410,6 +410,7 @@ resource "aws_lb_target_group" "project6_target_group" {
   vpc_id   = var.project6_vpc
 
   // add other required properties
+  target_type = "ip"
 
   tags = {
     Name = "project6-target-group"
