@@ -522,21 +522,19 @@ resource "aws_ecs_task_definition" "project6_task_definition" {
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.Project6AppRole.arn
 
-  container_definitions = jsondecode([
-      {
-        "name": "project6",
-        "image": "${var.ECR_REPOSITORY_URL}:${var.image_tag}",
-        "portMappings": [
-          {
-            "containerPort": 80,
-            "hostPort": 80,
-            "protocol": "tcp"
-          }
-        ]
-      }
+  container_definitions = jsonencode([
+    {
+      name      = "project6"
+      image     = "${var.ECR_REPOSITORY_URL}:${var.image_tag}"
+      portMappings = [
+        {
+          containerPort = 80
+          hostPort      = 80
+          protocol      = "tcp"
+        }
+      ]
+    }
   ])
-
-
   tags = {
     Name        = "Project 6 Task Definition"
     Environment = "Dev"
