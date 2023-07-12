@@ -392,8 +392,7 @@ resource "aws_lb" "project6_lb" {
   name               = "project6-lb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.lb_sg.id]
-  subnets            = [aws_subnet.project6_subnet_1.id, aws_subnet.project6_subnet_2.id]
+  subnets            = [var.project6_subnet_1]
 
   // add other required properties
 
@@ -494,7 +493,7 @@ resource "aws_security_group" "ecs_cluster_security_group" {
   name        = "ecs-cluster-security-group"
   description = "Security group for the ECS cluster"
 
-  vpc_id = aws_vpc.project6_vpc.id
+  vpc_id = var.project6_vpc
 
   ingress {
     description = "Allow inbound traffic from the load balancer"
@@ -533,15 +532,7 @@ resource "aws_ecs_task_definition" "project6_task_definition" {
             "hostPort": 80,
             "protocol": "tcp"
           }
-        ],
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "options": {
-            "awslogs-group": "${aws_cloudwatch_log_group.project6_log_group.name}",
-            "awslogs-region": "${var.aws_region}}",
-            "awslogs-stream-prefix": "ecs"
-          }
-        }
+        ]
       }
   ])
 
