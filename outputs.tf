@@ -62,3 +62,33 @@ output "image_processing_results_queue_arn" {
   description = "The ARN of the SQS Queue"
   value = aws_sqs_queue.image_processing_results_queue.arn
 }
+
+output "project6_ecs_cluster_id" {
+  description = "The ID of the ECS Cluster"
+  value = aws_ecs_cluster.project6_ecs_cluster.id
+}
+
+output "project6_task_definition_arn" {
+  description = "The ARN of the ECS Task Definition"
+  value = aws_ecs_task_definition.project6_task_definition.arn
+}
+
+output "ecs_cluster_security_group_id" {
+  description = "The ID of the ECS Cluster Security Group"
+  value = aws_security_group.ecs_cluster_security_group.id
+}
+
+output "Project6AppRole_arn" {
+  description = "The ARN of the IAM Role for the ECS Task"
+  value = aws_iam_role.Project6AppRole.arn
+}
+
+output "ecs_task_execution_role_name" {
+  description = "The name of the IAM Role for the ECS Task"
+  value = aws_iam_role.ecs_task_execution_role.name
+}
+
+output "ecs_task_execution_policy_arn" {
+  description = "The ARN of the IAM Policy for the ECS Task"
+  value = aws_iam_policy.ecs_task_execution_policy.arn
+}
