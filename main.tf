@@ -539,11 +539,6 @@ resource "aws_iam_role_policy_attachment" "ecsInstanceRole_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
-resource "aws_iam_role_policy_attachment" "ecsInstanceRole_policy_attachment_ecs" {
-  role       = aws_iam_role.ecsInstanceRole.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerServiceRole"
-}
-
 # ESC cluster
 resource "aws_ecs_cluster" "project6_ecs_cluster" {
   name = "project6-ecs-cluster"
