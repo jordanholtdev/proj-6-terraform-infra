@@ -555,7 +555,7 @@ resource "aws_ecs_cluster" "project6_ecs_cluster" {
 }
 
 # Launch configuration for the ECS cluster
-resource "aws_launch_configuration" "project6" {
+resource "aws_launch_configuration" "project6_launch_config" {
   image_id = "ami-06ca3ca175f37dd66"
   instance_type = "t2.micro"
 
@@ -570,11 +570,6 @@ resource "aws_launch_configuration" "project6" {
 
   lifecycle {
     create_before_destroy = true
-  }
-
-  tags = {
-    Name        = "Project 6 Launch Configuration"
-    Environment = "Dev"
   }
 }
 
