@@ -507,7 +507,42 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_attachment"
   policy_arn = aws_iam_policy.ecs_task_execution_policy.arn
 }
 
+# ecs instance Role
+resource "aws_iam_role" "ecsInstanceRole" {
+  name = "ecsInstanceRole"
 
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+# ecs instance profile
+resource "aws_iam_instance_profile" "ecsInstanceProfile" {
+  name = "ecsInstanceProfile"
+  role = aws_iam_role.ecsInstanceRole.name
+}
+
+resource "aws_iam_role_policy_attachment" "ecsInstanceRole_policy_attachment" {
+  role       = aws_iam_role.ecsInstanceRole.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_role_policy_attachment" "ecsInstanceRole_policy_attachment_ecs" {
+  role       = aws_iam_role.ecsInstanceRole.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerServiceRole"
+}
 
 # ESC cluster
 resource "aws_ecs_cluster" "project6_ecs_cluster" {
@@ -518,6 +553,41 @@ resource "aws_ecs_cluster" "project6_ecs_cluster" {
     Environment = "Dev"
   }
 }
+
+# Launch configuration for the ECS cluster
+resource "aws_launch_configuration" "project6_launch_config" {
+  image_id = "ami-06ca3ca175f37dd66"
+  instance_type = "t2.micro"
+
+  // add other required properties
+  iam_instance_profile = aws_iam_instance_profile.ecsInstanceProfile.name // this is the name of the instance profile
+
+  # Enable ECS
+  user_data = <<EOF
+                #!/bin/bash
+                echo ECS_CLUSTER=${aws_ecs_cluster.project6_ecs_cluster.name} >> /etc/ecs/ecs.config
+                EOF
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Auto scaling group for the ECS cluster
+resource "aws_autoscaling_group" "project6" {
+  desired_capacity = 1
+  launch_configuration = aws_launch_configuration.project6_launch_config.id
+  max_size = 1
+  min_size = 1
+  vpc_zone_identifier = [var.project6_subnet_1, var.project6_subnet_2]
+
+  tag {
+    key = "Name"
+    value = "Project 6 Auto Scaling Group"
+    propagate_at_launch = true
+  }
+}
+
 
 # Security group for the ECS cluster
 resource "aws_security_group" "ecs_cluster_security_group" {
@@ -597,3 +667,5 @@ resource "aws_ecs_service" "project6_ecs_service" {
     Environment = "Dev"
   }
 }
+
+
