@@ -107,3 +107,18 @@ output "project6_listener_arn" {
   description = "The ARN of the Load Balancer Listener"
   value = aws_lb_listener.project6_listener.arn
 }
+
+output "project6_ecs_cluster" {
+  description = "The name of the ECS Cluster"
+  value = aws_ecs_cluster.project6_ecs_cluster.name
+}
+
+output "project6_launch_config" {
+  description = "The ID of the Launch Configuration"
+  value = aws_launch_configuration.project6_launch_config.id
+}
+
+output "ecsInstanceRole_name" {
+  description = "The name of the IAM Role for the ECS Instance"
+  value = aws_iam_role.ecsInstanceRole.name
+}
