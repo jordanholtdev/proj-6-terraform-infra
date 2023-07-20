@@ -553,6 +553,7 @@ resource "aws_ecs_cluster" "project6_ecs_cluster" {
 resource "aws_launch_configuration" "project6_launch_config" {
   image_id = "ami-06ca3ca175f37dd66"
   instance_type = "t2.micro"
+  security_groups = [aws_security_group.ecs_cluster_security_group.id]
 
   // add other required properties
   iam_instance_profile = aws_iam_instance_profile.ecsInstanceProfile.name // this is the name of the instance profile
@@ -575,7 +576,6 @@ resource "aws_autoscaling_group" "project6" {
   max_size = 1
   min_size = 1
   vpc_zone_identifier = [var.project6_subnet_1, var.project6_subnet_2]
-  security_groups = [aws_security_group.ecs_cluster_security_group.id]
 
   tag {
     key = "Name"
