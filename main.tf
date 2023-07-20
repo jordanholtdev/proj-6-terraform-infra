@@ -403,50 +403,50 @@ resource "aws_lb" "project6_lb" {
 }
 
 # load balancer target group
-resource "aws_lb_target_group" "project6_target_group" {
-  name     = "project6-target-group"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = var.project6_vpc
+# resource "aws_lb_target_group" "project6_target_group" {
+#   name     = "project6-target-group"
+#   port     = 80
+#   protocol = "HTTP"
+#   vpc_id   = var.project6_vpc
 
-  // add other required properties
-  target_type = "instance"
+#   // add other required properties
+#   target_type = "instance"
 
-  tags = {
-    Name = "project6-target-group"
-    Project = "project6"
-  }
-}
+#   tags = {
+#     Name = "project6-target-group"
+#     Project = "project6"
+#   }
+# }
 
 # load balancer listener
-resource "aws_lb_listener" "project6_listener" {
-  load_balancer_arn = aws_lb.project6_lb.arn
-  port              = 80
-  protocol          = "HTTP"
+# resource "aws_lb_listener" "project6_listener" {
+#   load_balancer_arn = aws_lb.project6_lb.arn
+#   port              = 80
+#   protocol          = "HTTP"
 
-  default_action {
-    target_group_arn = aws_lb_target_group.project6_target_group.arn
-    type             = "forward"
-  }
-}
+#   default_action {
+#     target_group_arn = aws_lb_target_group.project6_target_group.arn
+#     type             = "forward"
+#   }
+# }
 
 # load balancer listener rule for the target group
-resource "aws_lb_listener_rule" "project6_listener_rule" {
-  listener_arn = aws_lb_listener.project6_listener.arn
-  priority     = 100
+# resource "aws_lb_listener_rule" "project6_listener_rule" {
+#   listener_arn = aws_lb_listener.project6_listener.arn
+#   priority     = 100
 
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.project6_target_group.arn
-  }
+#   action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.project6_target_group.arn
+#   }
 
-  condition {
-    path_pattern {
-      values = ["/"]
-    }
-  }
+#   condition {
+#     path_pattern {
+#       values = ["/"]
+#     }
+#   }
 
-}
+# }
 
 # Execution role for the ECS task
 resource "aws_iam_role" "ecs_task_execution_role" {
