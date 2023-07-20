@@ -410,7 +410,7 @@ resource "aws_lb_target_group" "project6_target_group" {
   vpc_id   = var.project6_vpc
 
   // add other required properties
-  target_type = "ip"
+  target_type = "instance"
 
   tags = {
     Name = "project6-target-group"
@@ -626,7 +626,7 @@ resource "aws_ecs_task_definition" "project6_task_definition" {
       portMappings = [
         {
           containerPort = 80
-          hostPort      = 80
+          hostPort      = 0
           protocol      = "tcp"
         }
       ],
@@ -634,7 +634,7 @@ resource "aws_ecs_task_definition" "project6_task_definition" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "/aws/lambda/image-processing-lambda"
-          awslogs-region        = var.aws_region
+          awslogs-region        = "${var.aws_region}"
           awslogs-stream-prefix = "ecs"
         }
       }
