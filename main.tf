@@ -618,6 +618,7 @@ resource "aws_ecs_task_definition" "project6_task_definition" {
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.Project6AppRole.arn
 
+
   container_definitions = jsonencode([
     {
       name      = "project6"
@@ -628,7 +629,15 @@ resource "aws_ecs_task_definition" "project6_task_definition" {
           hostPort      = 80
           protocol      = "tcp"
         }
-      ]
+      ],
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.image_processing_log_group.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "ecs"
+        }
+      }
     }
   ])
   tags = {
