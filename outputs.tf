@@ -93,20 +93,20 @@ output "ecs_task_execution_policy_arn" {
   value = aws_iam_policy.ecs_task_execution_policy.arn
 }
 
-# output "project6_target_group_arn" {
-#   description = "The ARN of the Target Group"
-#   value = aws_lb_target_group.project6_target_group.arn
-# }
+output "project6_target_group_arn" {
+  description = "The ARN of the Target Group"
+  value = aws_lb_target_group.project6_target_group.arn
+}
 
 output "project6_lb_arn" {
   description = "The ARN of the Load Balancer"
   value = aws_lb.project6_lb.arn
 }
 
-# output "project6_listener_arn" {
-#   description = "The ARN of the Load Balancer Listener"
-#   value = aws_lb_listener.project6_listener.arn
-# }
+output "project6_listener_arn" {
+  description = "The ARN of the Load Balancer Listener"
+  value = aws_lb_listener.project6_listener.arn
+}
 
 output "project6_ecs_cluster" {
   description = "The name of the ECS Cluster"
