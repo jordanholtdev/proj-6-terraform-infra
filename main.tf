@@ -660,11 +660,11 @@ resource "aws_ecs_service" "project6_ecs_service" {
     assign_public_ip = false
   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.project6_target_group.arn
-    container_name   = "project6"
-    container_port   = 80
-  }
+  # load_balancer {
+  #   target_group_arn = aws_lb_target_group.project6_target_group.arn
+  #   container_name   = "project6"
+  #   container_port   = 80
+  # }
 
   tags = {
     Name        = "Project 6 ECS Service"
