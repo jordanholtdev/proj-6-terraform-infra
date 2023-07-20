@@ -633,7 +633,7 @@ resource "aws_ecs_task_definition" "project6_task_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.image_processing_log_group.name
+          awslogs-group         = "/aws/lambda/image-processing-lambda"
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "ecs"
         }
