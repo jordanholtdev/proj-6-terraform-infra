@@ -611,7 +611,7 @@ resource "aws_security_group" "ecs_cluster_security_group" {
 # ECS task definition
 resource "aws_ecs_task_definition" "project6_task_definition" {
   family                   = "project6-task-definition"
-  requires_compatibilities = ["FARGATE"]
+  requires_compatibilities = ["EC2"]
   cpu                      = 256
   memory                   = 512
   network_mode             = "awsvpc"
