@@ -553,6 +553,7 @@ resource "aws_ecs_cluster" "project6_ecs_cluster" {
 resource "aws_launch_configuration" "project6_launch_config" {
   image_id = "ami-06ca3ca175f37dd66"
   instance_type = "t2.micro"
+  security_groups = [aws_security_group.ecs_cluster_security_group.id]
 
   // add other required properties
   iam_instance_profile = aws_iam_instance_profile.ecsInstanceProfile.name // this is the name of the instance profile
@@ -614,7 +615,7 @@ resource "aws_ecs_task_definition" "project6_task_definition" {
   requires_compatibilities = ["EC2"]
   cpu                      = 256
   memory                   = 512
-  network_mode             = "awsvpc"
+  network_mode             = "bridge"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.Project6AppRole.arn
 
@@ -653,12 +654,6 @@ resource "aws_ecs_service" "project6_ecs_service" {
   task_definition = aws_ecs_task_definition.project6_task_definition.arn
   desired_count   = 1
   launch_type     = "EC2"
-
-  network_configuration {
-    subnets         = [var.project6_subnet_1]
-    security_groups = [aws_security_group.ecs_cluster_security_group.id]
-    assign_public_ip = false
-  }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.project6_target_group.arn
