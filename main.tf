@@ -549,20 +549,23 @@ resource "aws_ecs_cluster" "project6_ecs_cluster" {
   }
 }
 
-# Launch configuration for the ECS cluster
-resource "aws_launch_configuration" "project6_launch_config" {
+# Launch template for the ECS cluster
+resource "aws_launch_template" "project6_launch_template" {
+  name = "project6_launch_template"
   image_id = "ami-06ca3ca175f37dd66"
   instance_type = "t2.micro"
-  security_groups = [aws_security_group.ecs_cluster_security_group.id]
 
-  // add other required properties
-  iam_instance_profile = aws_iam_instance_profile.ecsInstanceProfile.name // this is the name of the instance profile
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ecsInstanceProfile.name
+  }
 
-  # Enable ECS
-  user_data = <<EOF
+  vpc_security_group_ids = [aws_security_group.ecs_cluster_security_group.id]
+
+  user_data = base64encode(<<EOF
                 #!/bin/bash
                 echo ECS_CLUSTER=${aws_ecs_cluster.project6_ecs_cluster.name} >> /etc/ecs/ecs.config
                 EOF
+  )
 
   lifecycle {
     create_before_destroy = true
@@ -571,10 +574,16 @@ resource "aws_launch_configuration" "project6_launch_config" {
 
 # Auto scaling group for the ECS cluster
 resource "aws_autoscaling_group" "project6" {
-  desired_capacity = 1
-  launch_configuration = aws_launch_configuration.project6_launch_config.id
-  max_size = 1
+  name = "project6-autoscaling-group"
+  max_size = 2
   min_size = 1
+  health_check_grace_period = 300
+  health_check_type = "EC2"
+  desired_capacity = 1
+  launch_template {
+    id = aws_launch_template.project6_launch_template.id
+    version = "$Latest"
+  }
   vpc_zone_identifier = [var.project6_subnet_1, var.project6_subnet_2]
 
   tag {
