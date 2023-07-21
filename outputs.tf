@@ -118,7 +118,7 @@ output "ecsInstanceRole_name" {
   value = aws_iam_role.ecsInstanceRole.name
 }
 
-output "project6_launch_template.id" {
+output "project6_launch_template_id" {
   description = "The ID of the Launch Template"
   value = aws_launch_template.project6_launch_template.id
 }
