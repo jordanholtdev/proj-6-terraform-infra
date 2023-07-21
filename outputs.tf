@@ -113,12 +113,12 @@ output "project6_ecs_cluster" {
   value = aws_ecs_cluster.project6_ecs_cluster.name
 }
 
-output "project6_launch_config" {
-  description = "The ID of the Launch Configuration"
-  value = aws_launch_configuration.project6_launch_config.id
-}
-
 output "ecsInstanceRole_name" {
   description = "The name of the IAM Role for the ECS Instance"
   value = aws_iam_role.ecsInstanceRole.name
+}
+
+output "project6_launch_template.id" {
+  description = "The ID of the Launch Template"
+  value = aws_launch_template.project6_launch_template.id
 }
