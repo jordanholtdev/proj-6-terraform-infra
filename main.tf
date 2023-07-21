@@ -580,7 +580,7 @@ resource "aws_autoscaling_group" "project6" {
   health_check_grace_period = 300
   health_check_type = "EC2"
   desired_capacity = 1
-  luanch_template {
+  launch_template {
     id = aws_launch_template.project6_launch_template.id
     version = "$Latest"
   }
