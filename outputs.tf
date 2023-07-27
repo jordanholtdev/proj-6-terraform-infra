@@ -83,3 +83,7 @@ output "project6_beanstalk_service_name" {
   value = aws_iam_role.project6_beanstalk_service.name
 }
 
+output "project6_beanstalk_service_arn" {
+  description = "The ARN of the Elastic Beanstalk service"
+  value = aws_iam_role.project6_beanstalk_service.arn
+}
