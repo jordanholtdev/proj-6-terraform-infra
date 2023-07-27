@@ -527,7 +527,7 @@ resource "aws_iam_role" "project6_beanstalk_instance_role" {
 
 resource "aws_iam_instance_profile" "project6_beanstalk_instance_profile" {
   name = "project6_beanstalk_instance_profile"
-  role = aws_iam_role.project6_beanstalk_instance_role.arn
+  role = aws_iam_role.project6_beanstalk_instance_role.name
 }
 
 resource "aws_iam_role_policy_attachment" "project6_beanstalk_instance_policy_attachment" {
