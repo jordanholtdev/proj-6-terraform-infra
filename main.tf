@@ -502,7 +502,7 @@ resource "aws_elastic_beanstalk_application" "project6_app" {
 
 }
 
-resource "aws_iam_role" "beanstalk_instance" {
+resource "aws_iam_role" "project6_beanstalk_instance_role" {
   name = "project6_beanstalk_instance_role"
 
   assume_role_policy = jsonencode({
@@ -525,7 +525,7 @@ resource "aws_iam_role" "beanstalk_instance" {
 }
 
 
-resource "aws_iam_instance_profile" "beanstalk_instance_profile" {
+resource "aws_iam_instance_profile" "project6_beanstalk_instance_profile" {
   name = "project6_beanstalk_instance_profile"
   role = aws_iam_role.project6_beanstalk_instance_role.arn
 }
