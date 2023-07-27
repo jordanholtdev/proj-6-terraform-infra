@@ -388,8 +388,8 @@ resource "aws_sqs_queue_policy" "image_processing_results_queue_policy" {
 
 
 # S3 bucket for the Dockerrun.aws.json file
-resource "aws_s3_bucket" "project6-dockerrun" {
-  bucket = "project6-dockerrun"  # Replace with your desired bucket name
+resource "aws_s3_bucket" "project6_dockerrun" {
+  bucket = "project6_dockerrun"  # Replace with your desired bucket name
 
   tags = {
     Name        = "Project 6 Dockerrun Bucket"
@@ -399,7 +399,7 @@ resource "aws_s3_bucket" "project6-dockerrun" {
 
 # S3 ownership controls
 resource "aws_s3_bucket_ownership_controls" "dockerrun_bucket_ownership_controls" {
-  bucket = aws_s3_bucket.project6-dockerrun.id
+  bucket = aws_s3_bucket.project6_dockerrun.id
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
@@ -408,7 +408,7 @@ resource "aws_s3_bucket_ownership_controls" "dockerrun_bucket_ownership_controls
 
 # S3 block public access
 resource "aws_s3_bucket_public_access_block" "dockerrun_bucket_public_access_block" {
-  bucket = aws_s3_bucket.project6-dockerrun.id
+  bucket = aws_s3_bucket.project6_dockerrun.id
 
   block_public_acls       = false
   block_public_policy     = false
@@ -423,13 +423,13 @@ resource "aws_s3_bucket_acl" "dockerrun_bucket_acl" {
     aws_s3_bucket_public_access_block.dockerrun_bucket_public_access_block
   ]
 
-  bucket = aws_s3_bucket.project6-dockerrun.id
+  bucket = aws_s3_bucket.project6_dockerrun.id
   acl    = "private"
 }
 
 # S3 bucket policy
 resource "aws_s3_bucket_policy" "dockerrun_bucket_policy" {
-  bucket = aws_s3_bucket.project6-dockerrun.id
+  bucket = aws_s3_bucket.project6_dockerrun.id
 
   policy = <<EOF
 {
@@ -448,13 +448,43 @@ resource "aws_s3_bucket_policy" "dockerrun_bucket_policy" {
         "s3:DeleteObject"
       ],
       "Resource": [
-        "arn:aws:s3:::${aws_s3_bucket.project6-dockerrun.id}/*"
+        "arn:aws:s3:::${aws_s3_bucket.project6_dockerrun.id}/*"
       ]
     }
   ]
 }
 EOF
 }
+
+# Beanstalk IAM role
+resource "aws_iam_role" "beanstalk_service" {
+  name = "aws-elasticbeanstalk-service-role"
+
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Principal = {
+          Service = "elasticbeanstalk.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name        = "Project 6 Beanstalk Service Role"
+    Environment = "Dev"
+  }
+}
+
+# Beanstalk IAM policy attachment
+resource "aws_iam_role_policy_attachment" "beanstalk_service_policy_attachment" {
+  role       = aws_iam_role.beanstalk_service.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkEnhancedHealth"
+}
+
 
 
 # Beanstalk application for the web application
