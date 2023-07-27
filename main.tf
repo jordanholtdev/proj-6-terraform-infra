@@ -502,6 +502,39 @@ resource "aws_elastic_beanstalk_application" "project6_app" {
 
 }
 
+resource "aws_iam_role" "beanstalk_instance" {
+  name = "project6_beanstalk_instance_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name        = "Project 6 Beanstalk Instance Role"
+    Environment = "Dev"
+  }
+}
+
+
+resource "aws_iam_instance_profile" "beanstalk_instance_profile" {
+  name = "project6_beanstalk_instance_profile"
+  role = aws_iam_role.project6_beanstalk_instance_role.arn
+}
+
+resource "aws_iam_role_policy_attachment" "project6_beanstalk_instance_policy_attachment" {
+  role       = aws_iam_role.project6_beanstalk_instance_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"  # Example policy, adjust as needed
+}
+
 # Beanstalk environment for the web application
 resource "aws_elastic_beanstalk_environment" "project6_app_env" {
   name                = "project6-app-env"
@@ -509,6 +542,13 @@ resource "aws_elastic_beanstalk_environment" "project6_app_env" {
   solution_stack_name = "64bit Amazon Linux 2 v3.5.9 running Docker"
 
   # setting
+
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "IamInstanceProfile"
+    value     = aws_iam_instance_profile.project6_beanstalk_instance_profile.name
+  }
+
   setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
