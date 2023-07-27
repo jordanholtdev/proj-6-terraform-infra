@@ -502,6 +502,31 @@ resource "aws_elastic_beanstalk_application" "project6_app" {
 
 }
 
+resource "aws_iam_policy" "ecr_access_policy" {
+  name   = "ecr_access_policy"
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetAuthorizationToken",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:GetRepositoryPolicy",
+        "ecr:DescribeRepositories",
+        "ecr:ListImages",
+        "ecr:DescribeImages",
+        "ecr:BatchGetImage"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_iam_role" "project6_beanstalk_instance_role" {
   name = "project6_beanstalk_instance_role"
 
@@ -524,6 +549,10 @@ resource "aws_iam_role" "project6_beanstalk_instance_role" {
   }
 }
 
+resource "aws_iam_role_policy_attachment" "attach_ecr_policy" {
+  role       = aws_iam_role.project6_beanstalk_instance_role.name
+  policy_arn = aws_iam_policy.ecr_access_policy.arn
+}
 
 resource "aws_iam_instance_profile" "project6_beanstalk_instance_profile" {
   name = "project6_beanstalk_instance_profile"
