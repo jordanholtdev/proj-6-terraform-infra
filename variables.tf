@@ -33,7 +33,7 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "project6_vpc_id" {
+variable "project6_vpc" {
   description = "The ID of the VPC"
   type        = string
   default     = ""

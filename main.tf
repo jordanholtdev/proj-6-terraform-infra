@@ -465,7 +465,7 @@ resource "aws_elastic_beanstalk_application" "project6_app" {
   # appversion lifecycle
   appversion_lifecycle {
     max_count = 5
-    service_role = "aws-elasticbeanstalk-service-role"
+    service_role = aws_iam_role.beanstalk_service.arn
   }
 
   tags = {
@@ -485,7 +485,7 @@ resource "aws_elastic_beanstalk_environment" "project6_app_env" {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
-    value     = var.project6_vpc_id
+    value     = var.project6_vpc
   }
 
   setting {
