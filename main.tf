@@ -431,29 +431,26 @@ resource "aws_s3_bucket_acl" "dockerrun_bucket_acl" {
 resource "aws_s3_bucket_policy" "dockerrun_bucket_policy" {
   bucket = aws_s3_bucket.project6-dockerrun.id
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "AddPerm",
-      "Effect": "Allow",
-      "Principal": {
-       identifiers = ["elasticbeanstalk.amazonaws.com"]
-       type        = "Service"
-    },
-      "Action": [
-        "s3:GetObject",
-        "s3:PutObject",
-        "s3:DeleteObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::${aws_s3_bucket.project6-dockerrun.id}/*"
-      ]
-    }
-  ]
-}
-EOF
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowPublicRead"
+        Effect = "Allow"
+        Principal = {
+          AWS = "*"
+        }
+        Action = [
+         "s3:GetObject",
+         "s3:PutObject",
+         "s3:DeleteObject"
+        ]
+        Resource = [
+          "${aws_s3_bucket.project6-dockerrun.arn}/*"
+        ]
+      }
+    ]
+  })
 }
 
 # Beanstalk IAM role
