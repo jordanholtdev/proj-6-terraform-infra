@@ -68,12 +68,12 @@ output "beanstalk_application_name" {
   value = aws_elastic_beanstalk_application.project6_app.name
 }
 
-output "project6_dockerrun_id" {
+output "project6-dockerrun-id" {
   description = "The ID of the Elastic Beanstalk application version"
-  value = aws_s3_bucket.project6_dockerrun.id
+  value = aws_s3_bucket.project6-dockerrun.id
 }
 
-output "beanstalk_service_name" {
+output "project6_beanstalk_service_name" {
   description = "The name of the Elastic Beanstalk service"
-  value = aws_iam_role.beanstalk_service.name
+  value = aws_iam_role.project6_beanstalk_service.name
 }
