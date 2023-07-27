@@ -438,7 +438,7 @@ resource "aws_s3_bucket_policy" "dockerrun_bucket_policy" {
         Sid    = "AllowPublicRead"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::123456789012:role/${aws_iam_role.project6_beanstalk_service.arn}"
+          AWS = "${aws_iam_role.project6_beanstalk_service.arn}"
         }
         Action = [
          "s3:GetObject",
