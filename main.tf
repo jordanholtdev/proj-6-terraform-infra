@@ -528,10 +528,9 @@ resource "aws_elastic_beanstalk_application_version" "beanstalk_app_version" {
   application = aws_elastic_beanstalk_application.project6_app.name
   description = "app version description"
 
-  source_bundle {
-    bucket = aws_s3_bucket.project6-dockerrun.name # bucket where your source code is stored
-    key = "Dockerrun.aws.json" # path to source code zip
-  }
+  bucket = "project6-dockerrun" # bucket where your source code is stored
+  key = "Dockerrun.aws.json" # path to source code zip
+
 }
 
 
