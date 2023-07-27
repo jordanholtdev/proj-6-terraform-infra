@@ -63,7 +63,12 @@ output "image_processing_results_queue_arn" {
   value = aws_sqs_queue.image_processing_results_queue.arn
 }
 
-output "Project6AppRole_arn" {
-  description = "The ARN of the IAM Role for the ECS Task"
-  value = aws_iam_role.Project6AppRole.arn
+output "beanstalk_application_name" {
+  description = "The name of the Elastic Beanstalk application"
+  value = aws_elastic_beanstalk_application.project6_app.name
+}
+
+output "project6-dockerrun_id" {
+  description = "The ID of the Elastic Beanstalk application version"
+  value = aws_s3_bucket.project6-dockerrun.id
 }

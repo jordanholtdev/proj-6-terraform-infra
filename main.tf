@@ -387,6 +387,113 @@ resource "aws_sqs_queue_policy" "image_processing_results_queue_policy" {
 }
 
 
+# S3 bucket for the Dockerrun.aws.json file
+resource "aws_s3_bucket" "project6-dockerrun" {
+  bucket = "project6-dockerrun"  # Replace with your desired bucket name
+
+  tags = {
+    Name        = "Project 6 Dockerrun Bucket"
+    Environment = "Dev"
+  }
+}
+
+# S3 ownership controls
+resource "aws_s3_bucket_ownership_controls" "dockerrun_bucket_ownership_controls" {
+  bucket = aws_s3_bucket.project6-dockerrun.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+
+# S3 block public access
+resource "aws_s3_bucket_public_access_block" "dockerrun_bucket_public_access_block" {
+  bucket = aws_s3_bucket.project6-dockerrun.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+# S3 bucket ACL
+resource "aws_s3_bucket_acl" "dockerrun_bucket_acl" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.dockerrun_bucket_ownership_controls,
+    aws_s3_bucket_public_access_block.dockerrun_bucket_public_access_block
+  ]
+
+  bucket = aws_s3_bucket.project6-dockerrun.id
+  acl    = "private"
+}
+
+# S3 bucket policy
+resource "aws_s3_bucket_policy" "dockerrun_bucket_policy" {
+  bucket = aws_s3_bucket.project6-dockerrun.id
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AddPerm",
+      "Effect": "Allow",
+      "Principal": {
+       identifiers = ["elasticbeanstalk.amazonaws.com"]
+       type        = "Service"
+    },
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::${aws_s3_bucket.project6-dockerrun.id}/*"
+      ]
+    }
+  ]
+}
+EOF
+}
+
+
+# Beanstalk application for the web application
+resource "aws_elastic_beanstalk_application" "project6_app" {
+  name = "project6-app"
+  description = "Project 6 App"
+
+  # appversion lifecycle
+  appversion_lifecycle {
+    max_count = 5
+    service_role = "aws-elasticbeanstalk-service-role"
+  }
+
+  tags = {
+    Name        = "Project 6 App"
+    Environment = "Dev"
+  }
+
+}
+
+# Beanstalk environment for the web application
+resource "aws_elastic_beanstalk_environment" "project6_app_env" {
+  name                = "project6-app-env"
+  application         = aws_elastic_beanstalk_application.project6_app.name
+  solution_stack_name = "64bit Amazon Linux 2 v3.5.9 running Docker 20.10.23-1"
+
+  # setting
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "VPCId"
+    value     = var.project6_vpc_id
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "Subnets"
+    value     =  var.project6_subnet_1
+  }
+}
 
 
 
