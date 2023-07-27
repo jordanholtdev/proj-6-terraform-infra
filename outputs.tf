@@ -63,62 +63,7 @@ output "image_processing_results_queue_arn" {
   value = aws_sqs_queue.image_processing_results_queue.arn
 }
 
-output "project6_ecs_cluster_id" {
-  description = "The ID of the ECS Cluster"
-  value = aws_ecs_cluster.project6_ecs_cluster.id
-}
-
-output "project6_task_definition_arn" {
-  description = "The ARN of the ECS Task Definition"
-  value = aws_ecs_task_definition.project6_task_definition.arn
-}
-
-output "ecs_cluster_security_group_id" {
-  description = "The ID of the ECS Cluster Security Group"
-  value = aws_security_group.ecs_cluster_security_group.id
-}
-
 output "Project6AppRole_arn" {
   description = "The ARN of the IAM Role for the ECS Task"
   value = aws_iam_role.Project6AppRole.arn
-}
-
-output "ecs_task_execution_role_name" {
-  description = "The name of the IAM Role for the ECS Task"
-  value = aws_iam_role.ecs_task_execution_role.name
-}
-
-output "ecs_task_execution_policy_arn" {
-  description = "The ARN of the IAM Policy for the ECS Task"
-  value = aws_iam_policy.ecs_task_execution_policy.arn
-}
-
-output "project6_target_group_arn" {
-  description = "The ARN of the Target Group"
-  value = aws_lb_target_group.project6_target_group.arn
-}
-
-output "project6_lb_arn" {
-  description = "The ARN of the Load Balancer"
-  value = aws_lb.project6_lb.arn
-}
-
-output "project6_listener_arn" {
-  description = "The ARN of the Load Balancer Listener"
-  value = aws_lb_listener.project6_listener.arn
-}
-
-output "project6_ecs_cluster" {
-  description = "The name of the ECS Cluster"
-  value = aws_ecs_cluster.project6_ecs_cluster.name
-}
-
-output "ecsInstanceRole_name" {
-  description = "The name of the IAM Role for the ECS Instance"
-  value = aws_iam_role.ecsInstanceRole.name
-}
-
-output "project6_launch_template_id" {
-  description = "The ID of the Launch Template"
-  value = aws_launch_template.project6_launch_template.id
 }
