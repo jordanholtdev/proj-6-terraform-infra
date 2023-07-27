@@ -33,3 +33,14 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
+variable "project6_vpc" {
+  description = "The ID of the VPC"
+  type        = string
+  default     = ""
+}
+
+variable "project6_subnet_1" {
+  description = "value of the subnet 1"
+  type        = string
+  default     = ""
+}
