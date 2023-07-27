@@ -78,11 +78,6 @@ output "project6-dockerrun-arn" {
   value = aws_s3_bucket.project6-dockerrun.arn
 }
 
-output "project6-dockerrun-name" {
-  description = "The name of the Elastic Beanstalk application version"
-  value = aws_s3_bucket.project6-dockerrun.name
-}
-
 output "project6_beanstalk_service_name" {
   description = "The name of the Elastic Beanstalk service"
   value = aws_iam_role.project6_beanstalk_service.name
