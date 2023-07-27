@@ -102,3 +102,8 @@ output "project6_beanstalk_instance_profile_name" {
   description = "The name of the IAM Instance Profile for the Elastic Beanstalk instance"
   value = aws_iam_instance_profile.project6_beanstalk_instance_profile.name
 }
+
+output "ecr_access_policy_arn" {
+  description = "The ARN of the IAM Policy for the ECR access"
+  value = aws_iam_policy.ecr_access_policy.arn
+}
