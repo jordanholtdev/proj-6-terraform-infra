@@ -479,7 +479,7 @@ resource "aws_iam_role" "project6_beanstalk_service" {
 # Beanstalk IAM policy attachment
 resource "aws_iam_role_policy_attachment" "project6_beanstalk_service_policy_attachment" {
   role       = aws_iam_role.project6_beanstalk_service.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkEnhancedHealth"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkService"
 }
 
 
@@ -506,7 +506,7 @@ resource "aws_elastic_beanstalk_application" "project6_app" {
 resource "aws_elastic_beanstalk_environment" "project6_app_env" {
   name                = "project6-app-env"
   application         = aws_elastic_beanstalk_application.project6_app.name
-  solution_stack_name = "64bit Amazon Linux 2 v3.5.9 running Docker 20.10.23-1"
+  solution_stack_name = "64bit Amazon Linux 2 v3.5.9 running Docker"
 
   # setting
   setting {
