@@ -388,8 +388,8 @@ resource "aws_sqs_queue_policy" "image_processing_results_queue_policy" {
 
 
 # S3 bucket for the Dockerrun.aws.json file
-resource "aws_s3_bucket" "project6_dockerrun" {
-  bucket = "project6_dockerrun"  # Replace with your desired bucket name
+resource "aws_s3_bucket" "project6-dockerrun" {
+  bucket = "project6-dockerrun"  # Replace with your desired bucket name
 
   tags = {
     Name        = "Project 6 Dockerrun Bucket"
@@ -399,7 +399,7 @@ resource "aws_s3_bucket" "project6_dockerrun" {
 
 # S3 ownership controls
 resource "aws_s3_bucket_ownership_controls" "dockerrun_bucket_ownership_controls" {
-  bucket = aws_s3_bucket.project6_dockerrun.id
+  bucket = aws_s3_bucket.project6-dockerrun.id
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
@@ -408,7 +408,7 @@ resource "aws_s3_bucket_ownership_controls" "dockerrun_bucket_ownership_controls
 
 # S3 block public access
 resource "aws_s3_bucket_public_access_block" "dockerrun_bucket_public_access_block" {
-  bucket = aws_s3_bucket.project6_dockerrun.id
+  bucket = aws_s3_bucket.project6-dockerrun.id
 
   block_public_acls       = false
   block_public_policy     = false
@@ -423,13 +423,13 @@ resource "aws_s3_bucket_acl" "dockerrun_bucket_acl" {
     aws_s3_bucket_public_access_block.dockerrun_bucket_public_access_block
   ]
 
-  bucket = aws_s3_bucket.project6_dockerrun.id
+  bucket = aws_s3_bucket.project6-dockerrun.id
   acl    = "private"
 }
 
 # S3 bucket policy
 resource "aws_s3_bucket_policy" "dockerrun_bucket_policy" {
-  bucket = aws_s3_bucket.project6_dockerrun.id
+  bucket = aws_s3_bucket.project6-dockerrun.id
 
   policy = <<EOF
 {
@@ -448,7 +448,7 @@ resource "aws_s3_bucket_policy" "dockerrun_bucket_policy" {
         "s3:DeleteObject"
       ],
       "Resource": [
-        "arn:aws:s3:::${aws_s3_bucket.project6_dockerrun.id}/*"
+        "arn:aws:s3:::${aws_s3_bucket.project6-dockerrun.id}/*"
       ]
     }
   ]
@@ -457,7 +457,7 @@ EOF
 }
 
 # Beanstalk IAM role
-resource "aws_iam_role" "beanstalk_service" {
+resource "aws_iam_role" "project6_beanstalk_service" {
   name = "aws-elasticbeanstalk-service-role"
 
   assume_role_policy = jsonencode({
@@ -480,8 +480,8 @@ resource "aws_iam_role" "beanstalk_service" {
 }
 
 # Beanstalk IAM policy attachment
-resource "aws_iam_role_policy_attachment" "beanstalk_service_policy_attachment" {
-  role       = aws_iam_role.beanstalk_service.name
+resource "aws_iam_role_policy_attachment" "project6_beanstalk_service_policy_attachment" {
+  role       = aws_iam_role.project6_beanstalk_service.name
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkEnhancedHealth"
 }
 
@@ -495,7 +495,7 @@ resource "aws_elastic_beanstalk_application" "project6_app" {
   # appversion lifecycle
   appversion_lifecycle {
     max_count = 5
-    service_role = aws_iam_role.beanstalk_service.arn
+    service_role = aws_iam_role.project6_beanstalk_service.arn
   }
 
   tags = {
