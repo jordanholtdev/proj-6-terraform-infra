@@ -517,7 +517,13 @@ resource "aws_iam_policy" "ecr_access_policy" {
           "ecr:DescribeRepositories",
           "ecr:ListImages",
           "ecr:DescribeImages",
-          "ecr:BatchGetImage"
+          "ecr:BatchGetImage",
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
         ]
         Resource = "*"
       }
