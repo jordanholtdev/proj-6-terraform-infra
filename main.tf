@@ -1,17 +1,17 @@
-# terraform {
-#   required_providers {
-#     aws = {
-#       source  = "hashicorp/aws"
-#       version = "~> 4.16"
-#     }
-#   }
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
 
-#   required_version = ">= 1.2.0"
-# }
+  required_version = ">= 1.2.0"
+}
 
-# provider "aws" {
-#   region = var.aws_region
-# }
+provider "aws" {
+  region = var.aws_region
+}
 
 # resource "aws_cognito_user_pool" "Project6AppUserPool" {
 #   name = var.user_pool_name
